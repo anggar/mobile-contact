@@ -1,0 +1,29 @@
+Project Name:
+Contacts Mobile
+
+Activity:
+- SplashActivity
+- ContactListActivity
+	+ Menampilkan list contact
+	+ Floating Action Button untuk create contact
+	+ List contact: Foto (?), Nama
+	+ Search feature (?)
+- CreateContactActivity
+	+ Form: Nama, Phone, Alamat (dari maps), Email
+	+ DB tetap simpan Lat, Long
+	+ Foto (?) +++
+- ContactDetailActivity
+	+ Nampilkan fieldnya
+	+ Edit contact
+	+ Tampilkan di Maps :) (lokasi sekarang dan orang itu)
+	+ Tampilkan jarak lokasi sekarang dengan orang itu
+	
+Desain DB:
+Tabel Contact
+- ID int
+- Name text
+- Phone text
+- Address text
+- Latitude decimal
+- Longitude decimal
+- Photo blob (?)
