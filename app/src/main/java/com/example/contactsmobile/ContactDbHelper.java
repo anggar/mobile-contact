@@ -81,14 +81,14 @@ public class ContactDbHelper extends SQLiteOpenHelper
     public void updateOne(long rowId, Contact newContact) {
         ContentValues values = getContentValuesFrom(newContact);
         String whereClause = Contact._ID + " = ?";
-        String[] whereArgs = { Contact._ID };
+        String[] whereArgs = { String.valueOf(rowId) };
 
         int updatedRows = contactDb.update(Contact.TABLE_NAME, values, whereClause, whereArgs);
     }
 
     public void deleteOne(long rowId) {
         String whereClause = Contact._ID + " = ?";
-        String[] whereArgs = { Contact._ID };
+        String[] whereArgs = { String.valueOf(rowId) };
 
         int deletedRows = contactDb.delete(Contact.TABLE_NAME, whereClause, whereArgs);
     }
