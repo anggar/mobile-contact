@@ -21,16 +21,17 @@ public class ContactDbHelper extends SQLiteOpenHelper
             Contact.COLUMN_LATITUDE + " TEXT, " +
             Contact.COLUMN_LONGITUDE + " TEXT);";
 
-    private SQLiteDatabase contactDb;
+    private static SQLiteDatabase contactDb;
 
     public ContactDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        contactDb =  this.getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Nothing
         db.execSQL(SQL_CREATE_TABLE);
-        this.contactDb = getWritableDatabase();
     }
 
     @Override
@@ -49,6 +50,17 @@ public class ContactDbHelper extends SQLiteOpenHelper
         return values;
     }
 
+    private Contact getFromCursor(Cursor cur) {
+        long id = cur.getInt( cur.getColumnIndex(Contact._ID) );
+        String name = cur.getString( cur.getColumnIndex(Contact.COLUMN_NAME) );
+        String phone = cur.getString( cur.getColumnIndex(Contact.COLUMN_PHONE) );
+        String address = cur.getString( cur.getColumnIndex(Contact.COLUMN_ADDRESS) );
+        String lat = cur.getString( cur.getColumnIndex(Contact.COLUMN_LATITUDE) );
+        String lng = cur.getString( cur.getColumnIndex(Contact.COLUMN_LONGITUDE) );
+
+        return new Contact(id, name, address, phone, lat, lng);
+    }
+
     public ArrayList<Contact> getAll() {
         ArrayList<Contact> contacts = new ArrayList<>();
         String query = "SELECT * FROM " + Contact.TABLE_NAME;
@@ -59,18 +71,25 @@ public class ContactDbHelper extends SQLiteOpenHelper
         }
 
         for (int i = 0; i < cur.getCount(); i++) {
-            String name = cur.getString( cur.getColumnIndex(Contact.COLUMN_NAME) );
-            String phone = cur.getString( cur.getColumnIndex(Contact.COLUMN_PHONE) );
-            String address = cur.getString( cur.getColumnIndex(Contact.COLUMN_ADDRESS) );
-            String lat = cur.getString( cur.getColumnIndex(Contact.COLUMN_LATITUDE) );
-            String lng = cur.getString( cur.getColumnIndex(Contact.COLUMN_LONGITUDE) );
+            Contact contact = getFromCursor(cur);
 
-            contacts.add( new Contact(name, address, phone, lat, lng) );
+            contacts.add(contact);
             cur.moveToNext();
         }
 
         cur.close();
         return contacts;
+    }
+
+    public Contact getLastOne() {
+        String query = "SELECT * FROM " + Contact.TABLE_NAME + " ORDER BY _id DESC LIMIT 1";
+        Cursor cur = contactDb.rawQuery(query, null);
+
+        if (cur.getCount() > 0) {
+            cur.moveToFirst();
+        }
+
+        return getFromCursor(cur);
     }
 
     public long insertOne(Contact contact) {
@@ -86,7 +105,7 @@ public class ContactDbHelper extends SQLiteOpenHelper
         int updatedRows = contactDb.update(Contact.TABLE_NAME, values, whereClause, whereArgs);
     }
 
-    public void deleteOne(long rowId) {
+    public static void deleteOne(long rowId) {
         String whereClause = Contact._ID + " = ?";
         String[] whereArgs = { String.valueOf(rowId) };
 

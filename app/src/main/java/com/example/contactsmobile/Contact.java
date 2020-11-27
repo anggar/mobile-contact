@@ -12,14 +12,27 @@ public class Contact implements BaseColumns
     public static final String COLUMN_PHONE = "phone";
 
     private String name, address, phone, latitude, longitude;
+    private long id;
 
-    public Contact(String name, String address, String phone,
+    public Contact(long id, String name, String phone, String address,
                    String latitude, String longitude) {
+        this.id = id;
         this.name = name;
-        this.address = address;
         this.phone = phone;
+        this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                '}';
     }
 
     public String getName() {
@@ -60,5 +73,13 @@ public class Contact implements BaseColumns
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

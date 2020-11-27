@@ -1,13 +1,14 @@
 package com.example.contactsmobile;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,57 +17,60 @@ public class MainActivity extends AppCompatActivity
 {
     ContactDbHelper dbHelper;
     ListView listView;
-    SimpleAdapter adapter;
+    ContactAdapter adapter;
     HashMap<String, String> map;
-    ArrayList<HashMap<String, String>> mylist;
-    String[] jdl; //deklarasi judul iem
-    String[] ktr; //deklarasi keterangan item
-    String[] img; //deklarasi image item
+
+    ArrayList<Contact> contacts;
+
+    private void bindList() {
+//        ArrayList<HashMap<String,String>> list = new ArrayList<>();
+//        for (Contact contact: contacts){
+//            map = new HashMap<>();
+//            map.put("Nama", contact.getName());
+//            map.put("Nomor", contact.getPhone());
+//            map.put("Gambar", Integer.toString(R.drawable.gambar));
+//            list.add(map);
+//        }
+
+//        adapter = new SimpleAdapter(
+//                this, list, R.layout.list_item,
+//                new String[] { "Nama", "Nomor", "Gambar" },
+//                new int[] { R.id.tvName, R.id.tvPhone, R.id.ivPhoto}
+//        );
+        adapter = new ContactAdapter(MainActivity.this, 12, contacts);
+        listView.setAdapter(adapter);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnTambah=(Button)findViewById(R.id.button_tambah);
+        ExtendedFloatingActionButton btnAdd = findViewById(R.id.button_tambah);
 
-        btnTambah.setOnClickListener(new View.OnClickListener() {
+        btnAdd.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                Intent inte = new Intent(MainActivity.this, CreateContactActivity.class);
-                startActivity(inte);
+                Intent intent = new Intent(MainActivity.this, ContactFormActivity.class);
+                startActivityForResult(intent, 0);
             }
         });
 
         dbHelper = new ContactDbHelper(this);
+        contacts = dbHelper.getAll();
 
-        listView = (ListView)findViewById(R.id.list_view);
-        jdl = new String[] {
-                "Lutfi","Bayul","Anggar","Dia","Dan Dia"
-        };
-        ktr = new String[]{
-                "0898391823912","87421734144","874874387434","76467427674212","2417612476142","21747612474812" //jumlahnya harus sama dengan jumlah judul
-        };
-        img = new String[]{
-                Integer.toString(R.drawable.gambar),Integer.toString(R.drawable.gambar),Integer.toString(R.drawable.gambar),
-                Integer.toString(R.drawable.gambar),Integer.toString(R.drawable.gambar)
-        };
-        mylist = new ArrayList<HashMap<String, String>>();
-
-        for (int i=0; i<jdl.length; i++){
-            map = new HashMap<String, String>();
-            map.put("judul", jdl[i]);
-            map.put("Keterangan", ktr[i]);
-            map.put("Gambar", img[i]);
-            mylist.add(map);
-        }
-        adapter = new SimpleAdapter(this, mylist, R.layout.list_item,
-                new String[]{"judul", "Keterangan", "Gambar"}, new int[]{R.id.txt_judul,(R.id.txt_keterangan),(R.id.img)});
-        listView.setAdapter(adapter);
-
+        listView = findViewById(R.id.list_view);
+        bindList();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Contact latest = dbHelper.getLastOne();
 
+        if (resultCode == 1) {
+            adapter.add(latest);
+        }
+    }
 }
