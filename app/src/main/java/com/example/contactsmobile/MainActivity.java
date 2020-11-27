@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.ArrayList;
@@ -18,25 +17,10 @@ public class MainActivity extends AppCompatActivity
     ContactDbHelper dbHelper;
     ListView listView;
     ContactAdapter adapter;
-    HashMap<String, String> map;
 
     ArrayList<Contact> contacts;
 
     private void bindList() {
-//        ArrayList<HashMap<String,String>> list = new ArrayList<>();
-//        for (Contact contact: contacts){
-//            map = new HashMap<>();
-//            map.put("Nama", contact.getName());
-//            map.put("Nomor", contact.getPhone());
-//            map.put("Gambar", Integer.toString(R.drawable.gambar));
-//            list.add(map);
-//        }
-
-//        adapter = new SimpleAdapter(
-//                this, list, R.layout.list_item,
-//                new String[] { "Nama", "Nomor", "Gambar" },
-//                new int[] { R.id.tvName, R.id.tvPhone, R.id.ivPhoto}
-//        );
         adapter = new ContactAdapter(MainActivity.this, 12, contacts);
         listView.setAdapter(adapter);
     }
