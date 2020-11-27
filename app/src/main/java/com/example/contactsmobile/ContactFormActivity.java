@@ -1,13 +1,14 @@
 package com.example.contactsmobile;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.text.Editable;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
 
 import android.os.Bundle;
 
@@ -22,7 +23,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ContactFormActivity extends AppCompatActivity
     implements OnMapReadyCallback, GoogleMap.OnMapClickListener
@@ -32,7 +35,6 @@ public class ContactFormActivity extends AppCompatActivity
     private SupportMapFragment mapFragment;
     private Marker mapMarker;
     private LatLng mapLatLng;
-    private boolean mapVisible = false;
 
     private static final double DEFAULT_LAT = 0.7893;
     private static final double DEFAULT_LNG = 113.9213;
@@ -68,6 +70,36 @@ public class ContactFormActivity extends AppCompatActivity
         );
     }
 
+    private void searchLocation() {
+        Geocoder geocoder = new Geocoder(ContactFormActivity.this);
+        Editable et = ((TextInputEditText) findViewById(R.id.tetAddress)).getText();
+        List<Address> addrResult;
+
+        if (et != null && et.toString().isEmpty()) {
+            Toast.makeText(ContactFormActivity.this, "Provide a location",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            addrResult = geocoder.getFromLocationName(et.toString(), 1);
+
+            if (addrResult.isEmpty()) {
+                Toast.makeText(ContactFormActivity.this, "Location not found",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Address address = addrResult.get(0);
+            Double lat = address.getLatitude(),
+                   lng = address.getLongitude();
+            setPointOnMap(lat, lng);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void onAddContact() {
         Contact contact = getContact();
 
@@ -79,16 +111,24 @@ public class ContactFormActivity extends AppCompatActivity
         }
     }
 
+    private void setPointOnMap(Double lat, Double lng) {
+        LatLng latLng = new LatLng(lat, lng);
+
+        if (mapMarker != null) mapMarker.remove();
+
+        MarkerOptions markerOpt = new MarkerOptions()
+                .position(latLng)
+                .title("Selected Location");
+        mGmap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
+        mapMarker = mGmap.addMarker(markerOpt);
+        mapLatLng = latLng;
+    }
+
     private void initMap() {
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        mapFragment.getView().setVisibility(View.GONE);
-    }
-
-    private void resetMap() {
-        if (mapMarker != null) mapMarker.remove();
-        mapLatLng = null;
     }
 
     @Override
@@ -111,15 +151,7 @@ public class ContactFormActivity extends AppCompatActivity
         tlAddress.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mapVisible) {
-                    mapFragment.getView().setVisibility(View.GONE);
-                    resetMap();
-                }
-                else {
-                    mapFragment.getView().setVisibility(View.VISIBLE);
-                    Toast.makeText(ContactFormActivity.this, "Choose Location", Toast.LENGTH_SHORT).show();
-                }
-                mapVisible = !mapVisible;
+                searchLocation();
             }
         });
 
@@ -137,20 +169,12 @@ public class ContactFormActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGmap = googleMap;
-        mGmap.setOnMapClickListener(this);
-
         LatLng defaultLocation = new LatLng(DEFAULT_LAT, DEFAULT_LNG);
-        mGmap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 5));
+        mGmap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 2));
     }
 
     @Override
     public void onMapClick(LatLng latLng) {
-        if (mapMarker != null) mapMarker.remove();
-
-        MarkerOptions markerOpt = new MarkerOptions()
-                .position(latLng)
-                .title("Selected Location");
-        mapMarker = mGmap.addMarker(markerOpt);
-        mapLatLng = latLng;
+        setPointOnMap(latLng.latitude, latLng.longitude);
     }
 }
