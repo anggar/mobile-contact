@@ -76,8 +76,8 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
         new AlertDialog.Builder(getContext())
                 .setView(view)
                 .setCancelable(true)
-                .setPositiveButton("Konfirmasi", btnHandler)
-                .setNegativeButton("Batal", btnHandler)
+                .setPositiveButton("Confirm", btnHandler)
+                .setNegativeButton("Cancel", btnHandler)
                 .show();
     }
 }
