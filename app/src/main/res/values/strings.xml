@@ -6,5 +6,6 @@
     <string name="address">Address</string>
     <string name="locate">Locate</string>
     <string name="add_contact">Add contact</string>
-    <string name="confirm_delete">Anda yakin ingin menghapus kontak ini?</string>
+    <string name="title_activity_add_contact">New Contact</string>
+    <string name="confirm_delete">Are you sure want to delete this contact?</string>
 </resources>
