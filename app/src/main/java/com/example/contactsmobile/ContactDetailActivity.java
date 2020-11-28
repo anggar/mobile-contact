@@ -206,6 +206,8 @@ public class ContactDetailActivity extends AppCompatActivity implements OnMapRea
         ExtendedFloatingActionButton btnDistance = findViewById(R.id.btnDistance);
         tvDistance = (TextView) findViewById(R.id.tvDistance);
 
+        if (!locationProvided()) btnDistance.hide();
+
         btnEdit.setOnClickListener(view -> {
             Intent intent = new Intent(this, ContactFormActivity.class);
             intent.putExtra("id", contactId);

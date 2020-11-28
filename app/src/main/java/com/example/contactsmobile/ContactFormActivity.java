@@ -158,6 +158,11 @@ public class ContactFormActivity extends AppCompatActivity
         mapFragment.getMapAsync(this);
     }
 
+    private boolean locationProvided() {
+        return (!contact.getLatitude().equals("Nan") &&
+                !contact.getLongitude().equals("Nan"));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -186,7 +191,7 @@ public class ContactFormActivity extends AppCompatActivity
         mGmap = googleMap;
         LatLng locs;
 
-        if (contact != null) {
+        if (contact != null && locationProvided()) {
             double lat = Double.parseDouble(contact.getLatitude());
             double lng = Double.parseDouble(contact.getLongitude());
 

@@ -1,10 +1,15 @@
 package com.example.contactsmobile;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -38,6 +43,16 @@ public class MainActivity extends AppCompatActivity
 
         contacts = ContactDbHelper.getAll();
         bindList();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        RelativeLayout layout = findViewById(R.id.main_layout);
+
+        if (resultCode == 1) {
+            Snackbar.make(layout, "Contact saved", Snackbar.LENGTH_SHORT).show();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
