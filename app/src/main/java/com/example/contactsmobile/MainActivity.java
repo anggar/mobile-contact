@@ -1,16 +1,12 @@
 package com.example.contactsmobile;
-
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ListView;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -29,32 +25,25 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        dbHelper = new ContactDbHelper(this);
 
         ExtendedFloatingActionButton btnAdd = findViewById(R.id.button_tambah);
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                Intent intent = new Intent(MainActivity.this, ContactFormActivity.class);
-                startActivityForResult(intent, 0);
-            }
+        btnAdd.setOnClickListener(arg0 -> {
+            Intent intent = new Intent(MainActivity.this, ContactFormActivity.class);
+            startActivityForResult(intent, 0);
         });
 
-        dbHelper = new ContactDbHelper(this);
-        contacts = dbHelper.getAll();
-
         listView = findViewById(R.id.list_view);
+
+        contacts = ContactDbHelper.getAll();
         bindList();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == 1) {
-            Contact latest = dbHelper.getLastOne();
-            adapter.add(latest);
-        }
+    protected void onResume() {
+        contacts = ContactDbHelper.getAll();
+        bindList();
+        super.onResume();
     }
 }

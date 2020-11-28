@@ -24,6 +24,12 @@ public class Contact implements BaseColumns
         this.longitude = longitude;
     }
 
+    public String getShareable() {
+        return name +
+                "\n Phone: " + phone +
+                "\n Address: " + address;
+    }
+
     @Override
     public String toString() {
         return "Contact{" +

@@ -30,7 +30,6 @@ public class ContactDbHelper extends SQLiteOpenHelper
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Nothing
         db.execSQL(SQL_CREATE_TABLE);
     }
 
@@ -39,18 +38,18 @@ public class ContactDbHelper extends SQLiteOpenHelper
         // Nothing
     }
 
-    private ContentValues getContentValuesFrom(Contact contact) {
+    private static ContentValues getContentValuesFrom(Contact contact) {
         ContentValues values = new ContentValues();
         values.put(Contact.COLUMN_NAME ,contact.getName());
         values.put(Contact.COLUMN_PHONE, contact.getPhone());
-        values.put(Contact.COLUMN_ADDRESS, contact.getPhone());
+        values.put(Contact.COLUMN_ADDRESS, contact.getAddress());
         values.put(Contact.COLUMN_LATITUDE, contact.getLatitude());
         values.put(Contact.COLUMN_LONGITUDE, contact.getLongitude());
 
         return values;
     }
 
-    private Contact getFromCursor(Cursor cur) {
+    private static Contact getFromCursor(Cursor cur) {
         long id = cur.getInt( cur.getColumnIndex(Contact._ID) );
         String name = cur.getString( cur.getColumnIndex(Contact.COLUMN_NAME) );
         String phone = cur.getString( cur.getColumnIndex(Contact.COLUMN_PHONE) );
@@ -58,10 +57,10 @@ public class ContactDbHelper extends SQLiteOpenHelper
         String lat = cur.getString( cur.getColumnIndex(Contact.COLUMN_LATITUDE) );
         String lng = cur.getString( cur.getColumnIndex(Contact.COLUMN_LONGITUDE) );
 
-        return new Contact(id, name, address, phone, lat, lng);
+        return new Contact(id, name, phone, address, lat, lng);
     }
 
-    public ArrayList<Contact> getAll() {
+    public static ArrayList<Contact> getAll() {
         ArrayList<Contact> contacts = new ArrayList<>();
         String query = "SELECT * FROM " + Contact.TABLE_NAME;
         Cursor cur = contactDb.rawQuery(query, null);
@@ -81,7 +80,7 @@ public class ContactDbHelper extends SQLiteOpenHelper
         return contacts;
     }
 
-    public Contact getLastOne() {
+    public static Contact getLastOne() {
         String query = "SELECT * FROM " + Contact.TABLE_NAME + " ORDER BY _id DESC LIMIT 1";
         Cursor cur = contactDb.rawQuery(query, null);
 
@@ -92,12 +91,23 @@ public class ContactDbHelper extends SQLiteOpenHelper
         return getFromCursor(cur);
     }
 
-    public long insertOne(Contact contact) {
+    public static Contact getId(long id) {
+        String query = "SELECT * FROM " + Contact.TABLE_NAME + " WHERE _id = " + id;
+        Cursor cur = contactDb.rawQuery(query, null);
+
+        if (cur.getCount() > 0) {
+            cur.moveToFirst();
+        }
+
+        return getFromCursor(cur);
+    }
+
+    public static long insertOne(Contact contact) {
         ContentValues values = getContentValuesFrom(contact);
         return contactDb.insert(Contact.TABLE_NAME, null, values);
     }
 
-    public void updateOne(long rowId, Contact newContact) {
+    public static void updateOne(long rowId, Contact newContact) {
         ContentValues values = getContentValuesFrom(newContact);
         String whereClause = Contact._ID + " = ?";
         String[] whereArgs = { String.valueOf(rowId) };

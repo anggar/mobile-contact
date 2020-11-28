@@ -3,15 +3,11 @@ package com.example.contactsmobile;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Bundle;
 import android.text.Editable;
-import android.view.View;
 import android.widget.Toast;
-
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -30,14 +26,16 @@ import java.util.List;
 public class ContactFormActivity extends AppCompatActivity
     implements OnMapReadyCallback, GoogleMap.OnMapClickListener
 {
-    private ContactDbHelper dbHelper;
     private GoogleMap mGmap;
-    private SupportMapFragment mapFragment;
     private Marker mapMarker;
     private LatLng mapLatLng;
 
+    private Long contactId;
+    private Contact contact;
+
     private static final double DEFAULT_LAT = 0.7893;
     private static final double DEFAULT_LNG = 113.9213;
+    private MaterialButton btnAdd;
 
     private Contact getContact() {
         int[] tetViewId = { R.id.tetName, R.id.tetPhone, R.id.tetAddress };
@@ -82,6 +80,7 @@ public class ContactFormActivity extends AppCompatActivity
         }
 
         try {
+            assert et != null;
             addrResult = geocoder.getFromLocationName(et.toString(), 1);
 
             if (addrResult.isEmpty()) {
@@ -100,12 +99,39 @@ public class ContactFormActivity extends AppCompatActivity
         }
     }
 
+    private void onEditIntent() {
+        ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setTitle("Edit contact");
+        }
+
+        btnAdd.setText("Save contact");
+
+        TextInputEditText tetName = findViewById(R.id.tetName);
+        TextInputEditText tetPhone = findViewById(R.id.tetPhone);
+        TextInputEditText tetAddress = findViewById(R.id.tetAddress);
+
+        tetName.setText(contact.getName());
+        tetPhone.setText(contact.getPhone());
+        tetAddress.setText(contact.getAddress());
+    }
+
+    private void onEditSave() {
+        Contact contact = getContact();
+        Intent intent = new Intent();
+
+        ContactDbHelper.updateOne(contactId, contact);
+        setResult(2, intent);
+        finish();
+    }
+
     private void onAddContact() {
         Contact contact = getContact();
+        Intent intent = new Intent();
 
         if (contact != null) {
-            dbHelper.insertOne(contact);
-            Intent intent = new Intent();
+            ContactDbHelper.insertOne(contact);
             setResult(1, intent);
             finish();
         }
@@ -126,15 +152,10 @@ public class ContactFormActivity extends AppCompatActivity
     }
 
     private void initMap() {
-        mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+        assert mapFragment != null;
         mapFragment.getMapAsync(this);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
     }
 
     @Override
@@ -143,27 +164,21 @@ public class ContactFormActivity extends AppCompatActivity
         setContentView(R.layout.activity_contact_form);
         initMap();
 
-        dbHelper = new ContactDbHelper(this);
+        Bundle extras = getIntent().getExtras();
 
         TextInputLayout tlAddress = findViewById(R.id.tlAddress);
-        MaterialButton btnAdd = findViewById(R.id.btnAddContact);
+        btnAdd = findViewById(R.id.btnAddContact);
 
-        tlAddress.setEndIconOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                searchLocation();
-            }
-        });
+        tlAddress.setEndIconOnClickListener(view -> searchLocation());
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onAddContact();
-            }
-        });
-
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (extras != null) {
+            contactId = (Long) extras.get("id");
+            contact = ContactDbHelper.getId(contactId);
+            onEditIntent();
+            btnAdd.setOnClickListener(view -> onEditSave());
+        } else {
+            btnAdd.setOnClickListener(view -> onAddContact());
+        }
     }
 
     @Override

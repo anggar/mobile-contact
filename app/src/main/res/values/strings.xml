@@ -9,4 +9,8 @@
     <string name="title_activity_add_contact">New Contact</string>
     <string name="confirm_delete">Are you sure want to delete this contact?</string>
     <string name="title_activity_maps">Map</string>
+    <string name="calculate_distance">Calculate distance</string>
+    <string name="edit">Edit</string>
+    <string name="share">Share</string>
+    <string name="delete">Delete</string>
 </resources>

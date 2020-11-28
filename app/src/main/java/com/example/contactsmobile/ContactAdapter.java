@@ -4,6 +4,7 @@ package com.example.contactsmobile;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,11 +50,12 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
             viewContact.name.setText(contact.getName());
             viewContact.phone.setText(contact.getPhone());
 
-            viewContact.delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    deleteConfirmation(contact.getId(), contact, parent);
-                }
+            viewContact.delete.setOnClickListener(view -> deleteConfirmation(contact.getId(), contact, parent));
+
+            convertView.setOnClickListener(view -> {
+                Intent intent = new Intent(parent.getContext(), ContactDetailActivity.class);
+                intent.putExtra("id", contact.getId());
+                getContext().startActivity(intent);
             });
         }
 
@@ -63,13 +65,10 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
     private void deleteConfirmation(final long id, final Contact contact, ViewGroup parent) {
         final View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_delete_confirmation, parent, false);
 
-        DialogInterface.OnClickListener btnHandler = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (i == -1) {
-                    ContactDbHelper.deleteOne(id);
-                    ContactAdapter.this.remove(contact);
-                }
+        DialogInterface.OnClickListener btnHandler = (dialogInterface, which) -> {
+            if (which == -1) {
+                ContactDbHelper.deleteOne(id);
+                ContactAdapter.this.remove(contact);
             }
         };
 
