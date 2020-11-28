@@ -55,7 +55,7 @@ public class ContactFormActivity extends AppCompatActivity
             }
         }
 
-        String latitude = "-1", longitude = "-1";
+        String latitude = "NaN", longitude = "Nan";
         if (mapLatLng != null) {
             latitude = String.valueOf(mapLatLng.latitude);
             longitude = String.valueOf(mapLatLng.longitude);
@@ -184,8 +184,19 @@ public class ContactFormActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGmap = googleMap;
-        LatLng defaultLocation = new LatLng(DEFAULT_LAT, DEFAULT_LNG);
-        mGmap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 2));
+        LatLng locs;
+
+        if (contact != null) {
+            double lat = Double.parseDouble(contact.getLatitude());
+            double lng = Double.parseDouble(contact.getLongitude());
+
+            mapLatLng = new LatLng(lat, lng);
+            setPointOnMap(lat, lng);
+        }
+        else {
+            locs = new LatLng(DEFAULT_LAT, DEFAULT_LNG);
+            mGmap.moveCamera(CameraUpdateFactory.newLatLngZoom(locs, 2));
+        }
     }
 
     @Override
