@@ -5,13 +5,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -134,10 +138,17 @@ public class ContactDetailActivity extends AppCompatActivity implements OnMapRea
         TextView tvName = findViewById(R.id.tvName);
         TextView tvPhone = findViewById(R.id.tvPhone);
         TextView tvAddress = findViewById(R.id.tvAddress);
+        ImageView ivPhoto = findViewById(R.id.ivPhoto);
+
+        String photo = contact.getPhoto();
 
         tvName.setText(contact.getName());
         tvPhone.setText(contact.getPhone());
         tvAddress.setText(contact.getAddress());
+
+        if (photo != null) {
+            ivPhoto.setImageURI(Uri.parse(photo));
+        }
     }
 
     private void deleteConfirmation() {

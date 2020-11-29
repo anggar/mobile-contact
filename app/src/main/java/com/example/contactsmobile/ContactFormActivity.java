@@ -1,11 +1,19 @@
 package com.example.contactsmobile;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Editable;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,9 +27,14 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ContactFormActivity extends AppCompatActivity
     implements OnMapReadyCallback, GoogleMap.OnMapClickListener
@@ -35,7 +48,8 @@ public class ContactFormActivity extends AppCompatActivity
 
     private static final double DEFAULT_LAT = 0.7893;
     private static final double DEFAULT_LNG = 113.9213;
-    private MaterialButton btnAdd;
+    private Button btnAdd;
+    private Uri uriPhoto;
 
     private Contact getContact() {
         int[] tetViewId = { R.id.tetName, R.id.tetPhone, R.id.tetAddress };
@@ -64,8 +78,67 @@ public class ContactFormActivity extends AppCompatActivity
         return new Contact(
                 0, // unset
                 formValues.get(0), formValues.get(1), formValues.get(2),
-                latitude, longitude
+                latitude, longitude, uriPhoto != null ? uriPhoto.toString() : null
         );
+    }
+
+    private void pickPhoto() {
+        Intent picker = new Intent(Intent.ACTION_GET_CONTENT);
+        picker.setType("image/*");
+        startActivityForResult(picker, 100);
+    }
+
+    private  File getOutputMediaFile(){
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
+                + "/Android/data/"
+                + getApplicationContext().getPackageName()
+                + "/Files");
+
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                return null;
+            }
+        }
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmm", Locale.ENGLISH).format(new Date());
+        File mediaFile;
+        String mImageName="MI_"+ timeStamp +".jpg";
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
+        return mediaFile;
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Bitmap bitmap;
+        FileOutputStream fos;
+        File picFile = getOutputMediaFile();
+
+        if (resultCode == Activity.RESULT_OK) {
+            ImageView imageView = findViewById(R.id.ivPhoto);
+
+            if (data != null) {
+                try {
+                    fos = new FileOutputStream(picFile);
+
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+                    imageView.setImageBitmap(bitmap);
+
+                    uriPhoto = Uri.fromFile(picFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void searchLocation() {
@@ -111,10 +184,16 @@ public class ContactFormActivity extends AppCompatActivity
         TextInputEditText tetName = findViewById(R.id.tetName);
         TextInputEditText tetPhone = findViewById(R.id.tetPhone);
         TextInputEditText tetAddress = findViewById(R.id.tetAddress);
+        ImageView ivPhoto = findViewById(R.id.ivPhoto);
 
         tetName.setText(contact.getName());
         tetPhone.setText(contact.getPhone());
         tetAddress.setText(contact.getAddress());
+
+        String photo = contact.getPhoto();
+        if (photo != null) {
+            ivPhoto.setImageURI(Uri.parse(photo));
+        }
     }
 
     private void onEditSave() {
@@ -173,6 +252,7 @@ public class ContactFormActivity extends AppCompatActivity
 
         TextInputLayout tlAddress = findViewById(R.id.tlAddress);
         btnAdd = findViewById(R.id.btnAddContact);
+        MaterialButton btnPickPhoto = findViewById(R.id.btnPickPhoto);
 
         tlAddress.setEndIconOnClickListener(view -> searchLocation());
 
@@ -184,6 +264,8 @@ public class ContactFormActivity extends AppCompatActivity
         } else {
             btnAdd.setOnClickListener(view -> onAddContact());
         }
+
+        btnPickPhoto.setOnClickListener(view -> pickPhoto());
     }
 
     @Override

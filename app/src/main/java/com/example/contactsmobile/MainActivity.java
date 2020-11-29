@@ -47,6 +47,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode != 1 && resultCode != 2) {
+            return;
+        }
+
         RelativeLayout layout = findViewById(R.id.main_layout);
 
         if (resultCode == 1) {

@@ -5,11 +5,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +22,7 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
     public static class ViewHolder {
         TextView name;
         TextView phone;
+        ImageView photo;
         ImageButton delete;
     }
 
@@ -39,6 +42,7 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
 
             viewContact.name = convertView.findViewById(R.id.tvName);
             viewContact.phone = convertView.findViewById(R.id.tvPhone);
+            viewContact.photo = convertView.findViewById(R.id.ivPhoto);
             viewContact.delete = convertView.findViewById(R.id.btnDeleteContact);
 
             convertView.setTag(viewContact);
@@ -46,9 +50,16 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
             viewContact = (ViewHolder) convertView.getTag();
         }
 
+
         if (contact != null) {
+            String photo = contact.getPhoto();
+
             viewContact.name.setText(contact.getName());
             viewContact.phone.setText(contact.getPhone());
+
+            if (photo != null) {
+                viewContact.photo.setImageURI(Uri.parse(photo));
+            }
 
             viewContact.delete.setOnClickListener(view -> deleteConfirmation(contact.getId(), contact, parent));
 

@@ -19,7 +19,8 @@ public class ContactDbHelper extends SQLiteOpenHelper
             Contact.COLUMN_PHONE + " TEXT, " +
             Contact.COLUMN_ADDRESS + " TEXT, " +
             Contact.COLUMN_LATITUDE + " TEXT, " +
-            Contact.COLUMN_LONGITUDE + " TEXT);";
+            Contact.COLUMN_LONGITUDE + " TEXT, " +
+            Contact.COLUMN_PHOTO_PATH + " TEXT DEFAULT '');";
 
     private static SQLiteDatabase contactDb;
 
@@ -45,6 +46,7 @@ public class ContactDbHelper extends SQLiteOpenHelper
         values.put(Contact.COLUMN_ADDRESS, contact.getAddress());
         values.put(Contact.COLUMN_LATITUDE, contact.getLatitude());
         values.put(Contact.COLUMN_LONGITUDE, contact.getLongitude());
+        values.put(Contact.COLUMN_PHOTO_PATH, contact.getPhoto());
 
         return values;
     }
@@ -56,8 +58,9 @@ public class ContactDbHelper extends SQLiteOpenHelper
         String address = cur.getString( cur.getColumnIndex(Contact.COLUMN_ADDRESS) );
         String lat = cur.getString( cur.getColumnIndex(Contact.COLUMN_LATITUDE) );
         String lng = cur.getString( cur.getColumnIndex(Contact.COLUMN_LONGITUDE) );
+        String photo = cur.getString( cur.getColumnIndex(Contact.COLUMN_PHOTO_PATH) );
 
-        return new Contact(id, name, phone, address, lat, lng);
+        return new Contact(id, name, phone, address, lat, lng, photo);
     }
 
     public static ArrayList<Contact> getAll() {

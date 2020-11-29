@@ -1,6 +1,7 @@
 package com.example.contactsmobile;
 
 import android.provider.BaseColumns;
+import androidx.annotation.Nullable;
 
 public class Contact implements BaseColumns
 {
@@ -10,18 +11,21 @@ public class Contact implements BaseColumns
     public static final String COLUMN_LATITUDE = "latitude";
     public static final String COLUMN_LONGITUDE = "longitude";
     public static final String COLUMN_PHONE = "phone";
+    public static final String COLUMN_PHOTO_PATH = "photo";
 
     private String name, address, phone, latitude, longitude;
+    private @Nullable String photo;
     private long id;
 
     public Contact(long id, String name, String phone, String address,
-                   String latitude, String longitude) {
+                   String latitude, String longitude, @Nullable String photo) {
         this.id = id;
         this.name = name;
         this.phone = phone;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.photo = photo;
     }
 
     public String getShareable() {
@@ -38,6 +42,8 @@ public class Contact implements BaseColumns
                 ", phone='" + phone + '\'' +
                 ", latitude='" + latitude + '\'' +
                 ", longitude='" + longitude + '\'' +
+                ", photo='" + photo + '\'' +
+                ", id=" + id +
                 '}';
     }
 
@@ -87,5 +93,14 @@ public class Contact implements BaseColumns
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    @Nullable
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(@Nullable String photo) {
+        this.photo = photo;
     }
 }

@@ -25,12 +25,15 @@
                 android:layout_height="match_parent">
 
             <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     tools:srcCompat="@tools:sample/avatars"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/ivPhoto"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:contentDescription="@string/photo"/>
 
             <TextView
                     android:text="@string/name"

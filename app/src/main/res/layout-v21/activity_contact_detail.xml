@@ -25,10 +25,13 @@
                 android:layout_height="match_parent">
 
             <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     tools:srcCompat="@tools:sample/avatars"
                     android:id="@+id/ivPhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:maxWidth="180dp"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
