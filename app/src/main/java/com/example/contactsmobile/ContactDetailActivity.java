@@ -84,13 +84,13 @@ public class ContactDetailActivity extends AppCompatActivity implements OnMapRea
                 3000, 2, locationListener);
     }
 
-    private boolean locationProvided() {
-        return (!contact.getLatitude().equals("Nan") &&
-                !contact.getLongitude().equals("Nan"));
+    private boolean locationUnavailable() {
+        return (contact.getLatitude().equals("Nan") ||
+                contact.getLongitude().equals("Nan"));
     }
 
     private void setUserLocation() {
-        if (!locationProvided()) {
+        if (locationUnavailable()) {
             tvDistance.setText("Location is unavailable");
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(DEFAULT_LAT, DEFAULT_LNG), 2f));
             return;
@@ -98,10 +98,10 @@ public class ContactDetailActivity extends AppCompatActivity implements OnMapRea
 
         Double lat = Double.parseDouble(contact.getLatitude());
         Double lng = Double.parseDouble(contact.getLongitude());
-        setPointOnMap(lat, lng, 15f);
+        setPointOnMap(lat, lng);
     }
 
-    private void setPointOnMap(Double lat, Double lng, Float zoom) {
+    private void setPointOnMap(Double lat, Double lng) {
         LatLng latLng = new LatLng(lat, lng);
 
         if (mapMarker != null) mapMarker.remove();
@@ -109,7 +109,7 @@ public class ContactDetailActivity extends AppCompatActivity implements OnMapRea
         MarkerOptions markerOpt = new MarkerOptions()
                 .position(latLng)
                 .title("Selected Location");
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0F));
 
         mapMarker = map.addMarker(markerOpt);
         mapLatLng = latLng;
@@ -157,12 +157,10 @@ public class ContactDetailActivity extends AppCompatActivity implements OnMapRea
 
         dialog.setView(view);
 
-        dialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ContactDbHelper.deleteOne(contact.getId());
-                finish();
-            }
+        dialog.setPositiveButton("Confirm", (dialog1, which) -> {
+            ContactDbHelper.deleteOne(contact.getId());
+            setResult(2);
+            finish();
         });
         dialog.setNegativeButton("Cancel", null);
         dialog.show();
@@ -174,11 +172,10 @@ public class ContactDetailActivity extends AppCompatActivity implements OnMapRea
                                            @NonNull int[] grantResults)
     {
         locationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationPermissionGranted = true;
-                }
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                locationPermissionGranted = true;
+            }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -215,9 +212,9 @@ public class ContactDetailActivity extends AppCompatActivity implements OnMapRea
 
         ExtendedFloatingActionButton btnEdit = findViewById(R.id.btnEdit);
         ExtendedFloatingActionButton btnDistance = findViewById(R.id.btnDistance);
-        tvDistance = (TextView) findViewById(R.id.tvDistance);
+        tvDistance = findViewById(R.id.tvDistance);
 
-        if (!locationProvided()) btnDistance.hide();
+        if (locationUnavailable()) btnDistance.hide();
 
         btnEdit.setOnClickListener(view -> {
             Intent intent = new Intent(this, ContactFormActivity.class);

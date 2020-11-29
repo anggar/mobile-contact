@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
             convertView.setOnClickListener(view -> {
                 Intent intent = new Intent(parent.getContext(), ContactDetailActivity.class);
                 intent.putExtra("id", contact.getId());
-                getContext().startActivity(intent);
+                ((AppCompatActivity) getContext()).startActivityForResult(intent, 0);
             });
         }
 

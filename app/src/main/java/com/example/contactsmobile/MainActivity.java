@@ -1,14 +1,12 @@
 package com.example.contactsmobile;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -52,10 +50,8 @@ public class MainActivity extends AppCompatActivity
         }
 
         RelativeLayout layout = findViewById(R.id.main_layout);
-
-        if (resultCode == 1) {
-            Snackbar.make(layout, "Contact saved", Snackbar.LENGTH_SHORT).show();
-        }
+        String message = (resultCode == 1) ? "Contact saved" : "Contact deleted";
+        Snackbar.make(layout, message, Snackbar.LENGTH_SHORT).show();
         super.onActivityResult(requestCode, resultCode, data);
     }
 

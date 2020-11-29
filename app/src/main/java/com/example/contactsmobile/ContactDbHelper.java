@@ -83,17 +83,6 @@ public class ContactDbHelper extends SQLiteOpenHelper
         return contacts;
     }
 
-    public static Contact getLastOne() {
-        String query = "SELECT * FROM " + Contact.TABLE_NAME + " ORDER BY _id DESC LIMIT 1";
-        Cursor cur = contactDb.rawQuery(query, null);
-
-        if (cur.getCount() > 0) {
-            cur.moveToFirst();
-        }
-
-        return getFromCursor(cur);
-    }
-
     public static Contact getId(long id) {
         String query = "SELECT * FROM " + Contact.TABLE_NAME + " WHERE _id = " + id;
         Cursor cur = contactDb.rawQuery(query, null);
@@ -105,9 +94,9 @@ public class ContactDbHelper extends SQLiteOpenHelper
         return getFromCursor(cur);
     }
 
-    public static long insertOne(Contact contact) {
+    public static void insertOne(Contact contact) {
         ContentValues values = getContentValuesFrom(contact);
-        return contactDb.insert(Contact.TABLE_NAME, null, values);
+        contactDb.insert(Contact.TABLE_NAME, null, values);
     }
 
     public static void updateOne(long rowId, Contact newContact) {
@@ -115,13 +104,13 @@ public class ContactDbHelper extends SQLiteOpenHelper
         String whereClause = Contact._ID + " = ?";
         String[] whereArgs = { String.valueOf(rowId) };
 
-        int updatedRows = contactDb.update(Contact.TABLE_NAME, values, whereClause, whereArgs);
+        contactDb.update(Contact.TABLE_NAME, values, whereClause, whereArgs);
     }
 
     public static void deleteOne(long rowId) {
         String whereClause = Contact._ID + " = ?";
         String[] whereArgs = { String.valueOf(rowId) };
 
-        int deletedRows = contactDb.delete(Contact.TABLE_NAME, whereClause, whereArgs);
+        contactDb.delete(Contact.TABLE_NAME, whereClause, whereArgs);
     }
 }
