@@ -20,7 +20,7 @@
         <activity android:name=".ContactDetailActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".MainActivity"/>
+                    android:value=".ContactFormActivity"/>
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -36,19 +36,20 @@
 
         <activity
                 android:name=".ContactFormActivity"
-                android:label="@string/title_activity_add_contact"
-                android:parentActivityName=".MainActivity"
+                android:label="Mobile Assignment"
+                tools:targetApi="jelly_bean">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+                android:parentActivityName=".ContactFormActivity"
+                android:name=".MainActivity"
                 tools:targetApi="jelly_bean">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".MainActivity"/>
-        </activity>
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+                    android:value=".ContactFormActivity"/>
         </activity>
     </application>
 

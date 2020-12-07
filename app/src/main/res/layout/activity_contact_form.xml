@@ -12,80 +12,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-            android:hint="@string/name"
-            android:layout_marginTop="16dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:startIconDrawable="@drawable/ic_baseline_person_24"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/tetName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-            android:hint="@string/phone"
-            android:layout_marginTop="16dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:startIconDrawable="@drawable/ic_baseline_phone_24"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/tetPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number|phone" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_height="wrap_content">
-
-        <com.google.android.material.textfield.TextInputLayout
-                android:hint="@string/address"
-                android:id="@+id/tlAddress"
-                app:endIconMode="custom"
-                app:endIconDrawable="@drawable/ic_gps"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:startIconDrawable="@drawable/ic_baseline_person_pin_circle_24"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-            <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tetAddress"
-                    android:lines="2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-<!--        Just in case prefer button -->
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--                app:icon="@drawable/ic_gps"-->
-<!--                android:layout_marginLeft="8dp"-->
-<!--                android:text="@string/locate"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_marginStart="8dp"/>-->
-    </LinearLayout>
-
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        tools:context=".ContactFormActivityActivity" />
-
     <ImageView
         android:id="@+id/ivPhoto"
         android:src="@drawable/ic_undraw_photos"
@@ -102,14 +28,6 @@
         android:text="@string/pick_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <Button
-        android:id="@+id/btnAddContact"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="@string/add_contact"
-        app:icon="@drawable/ic_add" />
     </LinearLayout>
 
 </ScrollView>
