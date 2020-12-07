@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.ImageView;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,21 +29,20 @@ import java.util.Locale;
 
 public class ContactFormActivity extends AppCompatActivity
 {
-    private GoogleMap mGmap;
-    private Marker mapMarker;
-    private LatLng mapLatLng;
-
     private Long contactId;
     private Contact contact;
 
-    private static final double DEFAULT_LAT = 0.7893;
-    private static final double DEFAULT_LNG = 113.9213;
     private Uri uriPhoto;
 
     private void pickPhoto() {
         Intent picker = new Intent(Intent.ACTION_GET_CONTENT);
         picker.setType("image/*");
-        startActivityForResult(picker, 100);
+        startActivityForResult(picker, 221);
+    }
+
+    private void takePhoto() {
+        Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(camera, 222);
     }
 
     private  File getOutputMediaFile(){
@@ -80,18 +80,23 @@ public class ContactFormActivity extends AppCompatActivity
         if (resultCode == Activity.RESULT_OK) {
             ImageView imageView = findViewById(R.id.ivPhoto);
 
-            if (data != null) {
-                try {
-                    fos = new FileOutputStream(picFile);
+            if (requestCode == 221) {
+                if (data != null) {
+                    try {
+                        fos = new FileOutputStream(picFile);
 
-                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
-                    imageView.setImageBitmap(bitmap);
+                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+                        imageView.setImageBitmap(bitmap);
 
-                    uriPhoto = Uri.fromFile(picFile);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        uriPhoto = Uri.fromFile(picFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+            } else if (requestCode == 222) {
+                bitmap = (Bitmap) (data != null ? data.getExtras().get("data") : null);
+                imageView.setImageBitmap(bitmap);
             }
         }
 
@@ -121,6 +126,7 @@ public class ContactFormActivity extends AppCompatActivity
         Bundle extras = getIntent().getExtras();
 
         MaterialButton btnPickPhoto = findViewById(R.id.btnPickPhoto);
+        MaterialButton btnTakePhoto = findViewById(R.id.btnTakePic);
 
         if (extras != null) {
             contactId = (Long) extras.get("id");
@@ -129,5 +135,6 @@ public class ContactFormActivity extends AppCompatActivity
         }
 
         btnPickPhoto.setOnClickListener(view -> pickPhoto());
+        btnTakePhoto.setOnClickListener(view -> takePhoto());
     }
 }

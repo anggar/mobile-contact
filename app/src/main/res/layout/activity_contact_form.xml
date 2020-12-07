@@ -28,6 +28,15 @@
         android:text="@string/pick_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_margin="16dp"
+        android:layout_marginVertical="8dp"
+        android:id="@+id/btnTakePic"
+        app:icon="@drawable/ic_camera"
+        android:text="@string/take_photo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     </LinearLayout>
 
 </ScrollView>

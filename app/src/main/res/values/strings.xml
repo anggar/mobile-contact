@@ -15,4 +15,5 @@
     <string name="delete">Delete</string>
     <string name="pick_photo">Pick photo</string>
     <string name="photo">Photo</string>
+    <string name="take_photo">Take a photo</string>
 </resources>
