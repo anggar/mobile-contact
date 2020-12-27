@@ -1,4 +1,4 @@
-package com.example.contactsmobile;
+package com.example.contactsmobile.model;
 
 import android.provider.BaseColumns;
 import androidx.annotation.Nullable;

@@ -6,21 +6,33 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.contactsmobile.api.ApiClient;
+import com.example.contactsmobile.api.ApiInterface;
+import com.example.contactsmobile.model.Contact;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
     ContactDbHelper dbHelper;
     ListView listView;
-    ContactAdapter adapter;
+    ImageAdapter adapter;
 
     ArrayList<Contact> contacts;
+    ArrayList<String> photos;
+    Call<List<String>> call;
+
+    ApiInterface api;
+    private Callback<List<String>> callback;
 
     private void bindList() {
-        adapter = new ContactAdapter(MainActivity.this, 12, contacts);
+        adapter = new ImageAdapter(MainActivity.this, 12, photos);
         listView.setAdapter(adapter);
     }
 
@@ -39,8 +51,26 @@ public class MainActivity extends AppCompatActivity
 
         listView = findViewById(R.id.list_view);
 
+        api = ApiClient.getClient().create(ApiInterface.class);
+
+        call = api.listImage();
+        callback = new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                photos = (ArrayList<String>) response.body();
+                bindList();
+            }
+
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+
+            }
+        };
+
+        photos = new ArrayList<>();
+        call.enqueue(callback);
+
         contacts = ContactDbHelper.getAll();
-        bindList();
     }
 
     @Override
@@ -58,7 +88,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         contacts = ContactDbHelper.getAll();
-        bindList();
+//        call.enqueue(callback);
         super.onResume();
     }
 }

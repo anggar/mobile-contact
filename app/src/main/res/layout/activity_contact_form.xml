@@ -37,6 +37,15 @@
         android:text="@string/take_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+            android:layout_margin="16dp"
+            android:layout_marginVertical="8dp"
+            android:id="@+id/btnUpload"
+            app:icon="@drawable/ic_upload"
+            android:text="@string/upload_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+</LinearLayout>
 
 </ScrollView>

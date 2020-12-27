@@ -16,4 +16,5 @@
     <string name="pick_photo">Pick photo</string>
     <string name="photo">Photo</string>
     <string name="take_photo">Take a photo</string>
+    <string name="upload_image">Upload image</string>
 </resources>
